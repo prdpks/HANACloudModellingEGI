@@ -1,0 +1,53 @@
+{
+	"format_version": 1,
+	"imports": [
+		{
+			"target_table": "PERFORMANCE",
+			"source_data": {
+				"data_type": "CSV",
+				"file_name": "performance.csv",
+				"has_header": true,
+				"dialect": "HANA",
+				"type_config": {
+					"delimiter": ","
+				}
+			}
+		},
+		{
+			"target_table": "PRODUCTS",
+			"source_data": {
+				"data_type": "CSV",
+				"file_name": "Products.csv",
+				"has_header": true,
+				"dialect": "HANA",
+				"type_config": {
+					"delimiter": ","
+				}
+			}
+		},
+		{
+			"target_table": "SALES",
+			"source_data": {
+				"data_type": "CSV",
+				"file_name": "Sales.csv",
+				"has_header": true,
+				"dialect": "HANA",
+				"type_config": {
+					"delimiter": ","
+				}
+			}
+		},
+		{
+			"target_table": "NO_PERFORMANCE",
+			"source_data": {
+				"data_type": "CSV",
+				"file_name": "performance.csv",
+				"has_header": true,
+				"dialect": "HANA",
+				"type_config": {
+					"delimiter": ","
+				}
+			}
+		}
+	]
+}
