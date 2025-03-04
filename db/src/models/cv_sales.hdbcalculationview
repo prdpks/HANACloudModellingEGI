@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="cv_sales" applyPrivilegeType="NONE" dataCategory="CUBE" schemaVersion="3.0" hierarchyGeneration="SQL" cacheInvalidationPeriod="NONE" enforceSqlExecution="true" application="BAS">
+<descriptions defaultDescription="cv_sales"/>
+<localVariables/>
+<variableMappings/>
+<dataSources>
+  <DataSource id="SALES">
+    <resourceUri>SALES</resourceUri>
+  </DataSource>
+</dataSources>
+<snapshotProcedures/>
+<calculationViews>
+  <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1">
+    <viewAttributes>
+      <viewAttribute id="PRODUCT_ID"/>
+      <viewAttribute id="QUANTITY"/>
+      <viewAttribute id="PRICE"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="SALES"/>
+  </calculationView>
+</calculationViews>
+
+<logicalModel id="Projection_1">
+  <attributes>
+    <attribute id="PRODUCT_ID$local">
+      <descriptions defaultDescription="Product ID"/>
+      <keyMapping columnObjectName="Projection_1" columnName="PRODUCT_ID"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <baseMeasures>
+    <measure id="QUANTITY" order="1" aggregationType="sum" measureType="simple">
+      <descriptions defaultDescription="Quantity Sold"/>
+      <measureMapping columnObjectName="Projection_1" columnName="QUANTITY"/>
+      <exceptionAggregationMetadata/>
+    </measure>
+    <measure id="PRICE" order="2" aggregationType="sum" measureType="simple">
+      <descriptions defaultDescription="Price of the Product"/>
+      <measureMapping columnObjectName="Projection_1" columnName="PRICE"/>
+      <exceptionAggregationMetadata/>
+    </measure>
+  </baseMeasures>
+  <calculatedMeasures/>
+  <restrictedMeasures/>
+  <localDimensions/>
+  <sharedDimensions>
+    <logicalJoin associatedObjectUri="cv_products">
+      <attributes>
+        <attributeRef>PRODUCT_ID$local</attributeRef>
+      </attributes>
+      <associatedAttributeNames>
+        <attributeName>PRODUCT_ID</attributeName>
+      </associatedAttributeNames>
+      <properties cardinality="C1_1" joinType="leftOuter" joinOperator="Equal"/>
+      <associatedAttributeFeatures/>
+    </logicalJoin>
+  </sharedDimensions>
+</logicalModel>
+<layout>
+  <shapes>
+    <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+      <upperLeftCorner x="92" y="112"/>
+    
+      <rectangleSize width="160"/>
+    </shape>
+    
+  
+    <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="92" y="232"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape modelObjectName="Projection_1" modelObjectNameSpace="StarJoinViewNodeInput" modelObjectType="repository">
+      <upperLeftCorner x="20" y="30"/>
+      <rectangleSize width="157.50537109375"/>
+    </shape>
+    <shape modelObjectName="cv_products" modelObjectNameSpace="StarJoinViewNodeSharedCV" modelObjectType="repository">
+      <upperLeftCorner x="320" y="30"/>
+      <rectangleSize width="186.84228515625"/>
+    </shape>
+  </shapes>
+</layout>
+</Calculation:scenario>
