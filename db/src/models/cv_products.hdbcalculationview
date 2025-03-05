@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Calculation:scenario xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="cv_products" applyPrivilegeType="NONE" dataCategory="DIMENSION" schemaVersion="3.0" hierarchyGeneration="SQL" outputViewType="Aggregation" cacheInvalidationPeriod="NONE" enforceSqlExecution="true" application="BAS">
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" id="cv_products" applyPrivilegeType="NONE" dataCategory="DIMENSION" schemaVersion="3.0" hierarchyGeneration="SQL" outputViewType="Projection" cacheInvalidationPeriod="NONE" enforceSqlExecution="true" application="BAS" mdsCubeConversionExecution="AT_LOADING_TIME">
 <descriptions defaultDescription="cv_products"/>
-<localVariables/>
+<localVariables>
+  <variable id="IP_DELIVERY" parameter="true">
+    <descriptions defaultDescription="IP_DELIVERY"/>
+    <variableProperties datatype="BOOLEAN" mandatory="false" defaultValue="1">
+      <valueDomain type="empty"/>
+      <selection multiLine="false" type="SingleValue"/>
+    </variableProperties>
+  </variable>
+</localVariables>
 <variableMappings/>
 <dataSources>
   <DataSource id="PRODUCTS">
@@ -10,6 +18,14 @@
 </dataSources>
 <snapshotProcedures/>
 <calculationViews/>
+<inlineHierarchy xsi:type="Dimension:LeveledHierarchy" id="LEVEL_1" aggregateAllNodes="true" orphanedNodesHandling="ROOT_NODES" rootNodeVisibility="ADD_ROOT_NODE" withRootNode="true" nodeStyle="NAME_PATH_ENFORCED" cacheEnabled="true" cycleHandling="BREAKUP" emptyValueIsNull="true">
+  <descriptions defaultDescription=""/>
+  <unassignedMemberProperties mode="FALSE"/>
+  <levels>
+    <level levelAttribute="PRODUCT_GROUP" levelType="MDLEVEL_TYPE_REGULAR" order="1" orderAttribute="PRODUCT_GROUP" sortDirection="ASC"/>
+    <level levelAttribute="PRODUCT_NAME" levelType="MDLEVEL_TYPE_REGULAR" order="2" orderAttribute="PRODUCT_NAME" sortDirection="ASC"/>
+  </levels>
+</inlineHierarchy>
 
 <logicalModel id="PRODUCTS">
   <attributes>

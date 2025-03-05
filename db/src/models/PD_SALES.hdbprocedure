@@ -1,0 +1,13 @@
+PROCEDURE "PD_SALES"(out ettab table(PRODUCT_ID INT,PRODUCT_NAME VARCHAR(50), PRODUCT_GROUP VARCHAR(50) ) )
+LANGUAGE SQLSCRIPT
+SQL SECURITY INVOKER
+--DEFAULT SCHEMA <default_schema_name>
+READS SQL DATA AS
+BEGIN
+/*************************************
+    Write your procedure logic
+*************************************/
+tempTab1 = select "PRODUCT_ID", "PRODUCT_NAME", "PRODUCT_GROUP" from "PRODUCTS";
+
+ettab = select "PRODUCT_ID", "PRODUCT_NAME", "PRODUCT_GROUP" from :tempTab1;
+END

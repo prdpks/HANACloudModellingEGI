@@ -1,8 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="cv_sales" applyPrivilegeType="NONE" dataCategory="CUBE" schemaVersion="3.0" hierarchyGeneration="SQL" cacheInvalidationPeriod="NONE" enforceSqlExecution="true" application="BAS">
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:AccessControl="http://www.sap.com/ndb/SQLCoreModelAccessControl.ecore" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" xmlns:Privilege="http://www.sap.com/ndb/BiModelPrivilege.ecore" xmlns:Variable="http://www.sap.com/ndb/BiModelVariable.ecore" id="cv_sales" applyPrivilegeType="NONE" dataCategory="CUBE" schemaVersion="3.0" hierarchyGeneration="SQL" cacheInvalidationPeriod="NONE" enforceSqlExecution="true" application="BAS" mdsCubeConversionExecution="AT_LOADING_TIME">
 <descriptions defaultDescription="cv_sales"/>
-<localVariables/>
-<variableMappings/>
+<localVariables>
+  <variable id="VAR_PRODUCT">
+    <descriptions defaultDescription="Products to filter"/>
+    <variableProperties datatype="INTEGER" length="10" scale="0" defaultValue="" mandatory="false">
+      <valueDomain type="AttributeValue">
+        <externalLikeStructureName>cv_products</externalLikeStructureName>
+        <externalLikeStructureType>CALCULATION_VIEW</externalLikeStructureType>
+        <externalLikeElementName>PRODUCT_ID</externalLikeElementName>
+      </valueDomain>
+      <selection multiLine="true" type="SingleValue"/>
+    </variableProperties>
+  </variable>
+
+  <variable id="IP_DELIVERY" parameter="true">
+    <descriptions defaultDescription="Is delivery needed"/>
+    <variableProperties datatype="BOOLEAN" mandatory="false">
+      <valueDomain type="empty"/>
+      <selection multiLine="false" type="SingleValue"/>
+    </variableProperties>
+  </variable>
+</localVariables>
+<variableMappings>
+  <mapping xsi:type="Variable:VariableMapping" forStarJoin="true">
+    <targetVariable name="IP_DELIVERY" resourceUri="cv_products"/>
+    <localVariable>IP_DELIVERY</localVariable>
+  </mapping>
+</variableMappings>
 <dataSources>
   <DataSource id="SALES">
     <resourceUri>SALES</resourceUri>
@@ -41,8 +66,60 @@
       <exceptionAggregationMetadata/>
     </measure>
   </baseMeasures>
-  <calculatedMeasures/>
-  <restrictedMeasures/>
+  <calculatedMeasures>
+    <measure id="CC_DCHARGE" order="3" aggregationType="sum" measureType="simple" datatype="INTEGER" expressionLanguage="SQL">
+      <descriptions defaultDescription="Calculated Delivery Charge"/>
+      <formula>'$$IP_DELIVERY$$'*50</formula>
+      
+      
+      
+      <exceptionAggregationMetadata/>
+    </measure>
+    <measure id="CC_AMOUNT" order="4" aggregationType="sum" measureType="simple" datatype="DOUBLE" expressionLanguage="SQL">
+      <descriptions defaultDescription="Total Amount Payable"/>
+      <formula>(&quot;QUANTITY&quot;*&quot;PRICE&quot;)+&quot;CC_DCHARGE&quot;</formula>
+      
+      
+      
+      <exceptionAggregationMetadata/>
+    </measure>
+  </calculatedMeasures>
+  <restrictedMeasures>
+    <measure id="RC_PRICE" order="5" aggregationType="sum" datatype="DOUBLE" length="15" baseMeasure="PRICE" restrictionExpressionLanguage="SQL">
+      <descriptions defaultDescription="Restricted Price Info"/>
+      <restriction logicalOperator="AND">
+        <filter xsi:type="Privilege:AttributeFilter" attributeName="PRODUCT_GROUP" datatype="NVARCHAR">
+          <valueFilter xsi:type="AccessControl:SingleValueFilter" including="true" value="Food"/>
+        </filter>
+        <dimensionUri>cv_products</dimensionUri>
+      </restriction>
+      <restriction logicalOperator="AND">
+        <filter xsi:type="Privilege:AttributeFilter" attributeName="PRODUCT_GROUP" datatype="NVARCHAR">
+          <valueFilter xsi:type="AccessControl:SingleValueFilter" including="true" value="Electronics"/>
+        </filter>
+        <dimensionUri>cv_products</dimensionUri>
+      </restriction>
+      
+      <exceptionAggregationMetadata/>
+    </measure>
+    <measure id="RC_QUANTITY" order="6" aggregationType="sum" datatype="INTEGER" length="10" scale="0" baseMeasure="QUANTITY" restrictionExpressionLanguage="SQL">
+      <descriptions defaultDescription="Restricted Quantity Info"/>
+      <restriction logicalOperator="AND">
+        <filter xsi:type="Privilege:AttributeFilter" attributeName="PRODUCT_GROUP" datatype="NVARCHAR">
+          <valueFilter xsi:type="AccessControl:SingleValueFilter" including="true" value="Electronics"/>
+        </filter>
+        <dimensionUri>cv_products</dimensionUri>
+      </restriction>
+      <restriction logicalOperator="AND">
+        <filter xsi:type="Privilege:AttributeFilter" attributeName="PRODUCT_GROUP" datatype="NVARCHAR">
+          <valueFilter xsi:type="AccessControl:SingleValueFilter" including="true" value="Food"/>
+        </filter>
+        <dimensionUri>cv_products</dimensionUri>
+      </restriction>
+      
+      <exceptionAggregationMetadata/>
+    </measure>
+  </restrictedMeasures>
   <localDimensions/>
   <sharedDimensions>
     <logicalJoin associatedObjectUri="cv_products">
@@ -52,8 +129,12 @@
       <associatedAttributeNames>
         <attributeName>PRODUCT_ID</attributeName>
       </associatedAttributeNames>
-      <properties cardinality="C1_1" joinType="leftOuter" joinOperator="Equal"/>
-      <associatedAttributeFeatures/>
+      <properties cardinality="CN_N" joinType="leftOuter" joinOperator="Equal"/>
+      <associatedAttributeFeatures>
+        <attributeReference attributeName="PRODUCT_ID">
+          <localVariable>VAR_PRODUCT</localVariable>
+        </attributeReference>
+      </associatedAttributeFeatures>
     </logicalJoin>
   </sharedDimensions>
 </logicalModel>
@@ -72,11 +153,11 @@
     </shape>
     <shape modelObjectName="Projection_1" modelObjectNameSpace="StarJoinViewNodeInput" modelObjectType="repository">
       <upperLeftCorner x="20" y="30"/>
-      <rectangleSize width="157.50537109375"/>
+      <rectangleSize width="157"/>
     </shape>
     <shape modelObjectName="cv_products" modelObjectNameSpace="StarJoinViewNodeSharedCV" modelObjectType="repository">
-      <upperLeftCorner x="320" y="30"/>
-      <rectangleSize width="186.84228515625"/>
+      <upperLeftCorner x="620" y="30"/>
+      <rectangleSize width="186"/>
     </shape>
   </shapes>
 </layout>
