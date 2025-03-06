@@ -73,11 +73,13 @@
       
       
       
+      
       <exceptionAggregationMetadata/>
     </measure>
     <measure id="CC_AMOUNT" order="4" aggregationType="sum" measureType="simple" datatype="DOUBLE" expressionLanguage="SQL">
       <descriptions defaultDescription="Total Amount Payable"/>
       <formula>(&quot;QUANTITY&quot;*&quot;PRICE&quot;)+&quot;CC_DCHARGE&quot;</formula>
+      
       
       
       
@@ -100,6 +102,7 @@
         <dimensionUri>cv_products</dimensionUri>
       </restriction>
       
+      
       <exceptionAggregationMetadata/>
     </measure>
     <measure id="RC_QUANTITY" order="6" aggregationType="sum" datatype="INTEGER" length="10" scale="0" baseMeasure="QUANTITY" restrictionExpressionLanguage="SQL">
@@ -116,6 +119,7 @@
         </filter>
         <dimensionUri>cv_products</dimensionUri>
       </restriction>
+      
       
       <exceptionAggregationMetadata/>
     </measure>
